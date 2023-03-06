@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "iScoreApp",
-    "slug": "iScoreApp",
+    "slug": "iscore",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -28,6 +28,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "e66c6146-d22d-478e-81d0-2058c94a490c"
+      }
+    },
+    "owner": "baazzaar"
   }
 }
