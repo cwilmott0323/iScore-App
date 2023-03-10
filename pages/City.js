@@ -1,7 +1,8 @@
-import {View, Text, TouchableWithoutFeedback, Image, ScrollView, StyleSheet} from 'react-native';
+import {View, Text, TouchableWithoutFeedback, Image, ScrollView, StyleSheet, ActivityIndicator} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import {GetCityData} from '../api/GetCityData'
+import {after} from "underscore";
 
 function onPressPlace(setShowOne, setShowTwo, showOne, showTwo) {
     if (showOne || showTwo === true) {
@@ -24,6 +25,8 @@ function City ({ route, navigation }) {
     const [showPlace, setShowPlace] = useState(true);
     const [showFood, setShowFood] = useState(true);
     const [showEvent, setShowEvent] = useState(true);
+
+    const [pageLoading, setPageLoading] = useState(true);
 
     const places = [];
     const food = [];
@@ -51,12 +54,23 @@ function City ({ route, navigation }) {
             setData(true)
         }
         fetchMyAPI(countryName, cityName)
+        navigation.setOptions({ title: cityName })
     }, [])
 
     useEffect(() => {}, [showPlace])
 
+    const onComplete = after(cityDataPlaces.length + cityDataFood.length + cityDataEvents.length, () => {
+        setPageLoading(false);
+        console.log("loaded");
+    });
 
     return (
+        <>
+            {pageLoading &&
+                <View className="h-full justify-center items-center bg-stone-900">
+                    <ActivityIndicator size="large" color="#00ff00"  />
+                </View>
+            }
         <View className="bg-stone-900 h-full">
             <View className="flex flex-row justify-around items-end bg-stone-900 mt-2 mb-2" >
                         <MaterialCommunityIcons onPress={() => onPressPlace(setShowFood, setShowEvent, showFood, showEvent)} name="castle" size={48} color="white" />
@@ -77,6 +91,8 @@ function City ({ route, navigation }) {
                                    source={{
                                        uri: `https://iscore-media.s3.us-east-2.amazonaws.com/${image_location}`,
                                    }}
+                                   onLoad={onComplete}
+                                   onError={onComplete}
                             />
                         </TouchableWithoutFeedback>
                         <Text style={styles.textWithShadow} className="text-white absolute bottom-3 left-8 font-bold text-2xl items-start justify-center">
@@ -96,6 +112,8 @@ function City ({ route, navigation }) {
                                    source={{
                                        uri: `https://iscore-media.s3.us-east-2.amazonaws.com/${image_location}`,
                                    }}
+                                   onLoad={onComplete}
+                                   onError={onComplete}
                             />
                         </TouchableWithoutFeedback>
                         <Text style={styles.textWithShadow} className="text-white absolute bottom-3 left-8 font-bold text-2xl items-start justify-center">
@@ -115,6 +133,8 @@ function City ({ route, navigation }) {
                                    source={{
                                        uri: `https://iscore-media.s3.us-east-2.amazonaws.com/${image_location}`,
                                    }}
+                                   onLoad={onComplete}
+                                   onError={onComplete}
                             />
                         </TouchableWithoutFeedback>
                         <Text style={styles.textWithShadow} className="text-white absolute bottom-3 left-8 font-bold text-2xl items-start justify-center">
@@ -129,6 +149,7 @@ function City ({ route, navigation }) {
                 ))}
             </ScrollView>
         </View>
+            </>
     );
 }
 

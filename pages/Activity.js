@@ -1,4 +1,13 @@
-import {ScrollView, Text, View, Image, TouchableWithoutFeedback, TouchableHighlight, StyleSheet} from "react-native";
+import {
+    ScrollView,
+    Text,
+    View,
+    Image,
+    TouchableWithoutFeedback,
+    TouchableHighlight,
+    StyleSheet,
+    ActivityIndicator
+} from "react-native";
 import React, {useContext, useEffect, useState} from "react";
 import Slider from "../components/Slider"
 import {GetActivity} from "../api/GetActivity";
@@ -11,6 +20,9 @@ import {UploadImage} from "../api/UploadImage";
 import * as Location from 'expo-location';
 import {CheckLocData} from "../api/CheckLocData";
 import {CheckIsComplete} from "../api/IsComplete";
+import {after} from "underscore";
+import tw from "twrnc";
+
 
 export function Activity({route, navigation}) {
     const {cityName, countryName, activity, activity_id} = route.params;
@@ -24,6 +36,7 @@ export function Activity({route, navigation}) {
     const [lon, setLon] = useState(null);
     const [upload, setUpload] = useState(false);
     const [complete, setComplete] = useState(false);
+    const [pageLoading, setPageLoading] = useState(true);
 
 
     const handleSubmitUpload = async (photo) => {
@@ -103,29 +116,48 @@ export function Activity({route, navigation}) {
         }
         isCompleted(countryName, cityName, activity_id)
         fetchActivity(countryName, cityName, activity)
+        navigation.setOptions({ title: activity })
     }, [uploadSuccess])
 
     return (
-        <ScrollView>
-        <View className="flex flex-1 flex-col">
+        <>
+        {pageLoading &&
+    <View className="h-full justify-center items-center bg-stone-900">
+        <ActivityIndicator size="large" color="#00ff00"  />
+    </View>
+}
+        <ScrollView className="bg-stone-900">
+        <View className="">
             {data &&
-            <Slider images={images} userImages={imagesUser} half={true}/>
+            <Slider images={images} userImages={imagesUser} half={true} setPageLoading={setPageLoading}/>
             }
             <View>
-                <Button title="Choose Photo From Library" onPress={pickImage} />
-                <Button title="Take a Picture" onPress={openCamera} />
-                {photo &&
-                    <View>
-                    <Image source={{ uri: photo }} style={{ width: 200, height: 200 }} />
-                    <Button title="Remove Photo" onPress={() => {setPhoto(null)
-                        setUpload(false)}} />
-                        <Button disabled={!upload} title="Upload" onPress={() => handleSubmitUpload(photo)} />
+                    {photo &&
+                        <>
+                            <View className="flex-row justify-around">
+                            <Button buttonStyle={tw`bg-red-300 h-24 w-32 rounded-md mt-5`} title="Remove Photo" onPress={() => {setPhoto(null)
+                                setUpload(false)}} />
+                            <Button buttonStyle={tw`bg-red-300 h-24 w-32 rounded-md mt-5`} disabled={!upload} title="Upload" onPress={() => handleSubmitUpload(photo)} />
+                            </View>
+                            <View className="justify-center items-center">
+                                <Image className="h-48 w-48 mt-5" source={{ uri: photo }} />
+                            </View>
 
-                    </View>
-                }
+                            </>
+                    }
+                    {!photo &&
+                        <>
+                            <View className="flex-row justify-around">
+                        <Button  buttonStyle={tw`bg-gray-300 h-24 w-32 rounded-md mt-5 font-bold text-lg`}  title="Choose Photo From Library" onPress={pickImage} />
+                        <Button buttonStyle={tw`bg-red-300 h-24 w-32 rounded-md mt-5`} title="Take a Picture" onPress={openCamera} />
+                            </View>
+                            </>
+
+                    }
 
             </View>
         </View>
         </ScrollView>
+        </>
    );
 }

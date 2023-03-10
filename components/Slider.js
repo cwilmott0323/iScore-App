@@ -1,13 +1,13 @@
 import {View, Text, FlatList, TouchableHighlight} from "react-native";
 import SlideItem from "./SlideItem";
 
-export default function Slider ({images, userImages, half}) {
+export default function Slider ({images, userImages, half, setPageLoading}) {
     const imagesAppend = images[0]
     const array3 = [imagesAppend, ...userImages];
     return(
         <View>
             <FlatList data={array3}
-            renderItem={({item}) => <SlideItem item={item} half={half} x={images} y={userImages}/>}
+            renderItem={({item}) => <SlideItem item={item} half={half} x={images} y={userImages} setPageLoading={setPageLoading}/>}
                       horizontal
                       pagingEnabled
                       snapToAlignment="center"

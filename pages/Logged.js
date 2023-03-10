@@ -1,4 +1,4 @@
-import {View, Text, TouchableWithoutFeedback, FlatList, Dimensions} from 'react-native';
+import {View, Text, TouchableWithoutFeedback, FlatList, Dimensions, ActivityIndicator} from 'react-native';
 import React, {useContext, useEffect, useState} from "react";
 import {Button} from "@rneui/themed";
 import tw from 'twrnc';
@@ -9,6 +9,7 @@ import {useHeaderHeight} from "@react-navigation/elements";
 import { SelectList } from 'react-native-dropdown-select-list'
 import {GetCountries} from "../api/GetCountries";
 import { REACT_APP_MEDIA_BASE_URL } from "@env"
+import { after } from "underscore";
 
 
 
@@ -24,6 +25,7 @@ const Logged = ({ navigation }) => {
     const { getToken } = useContext(AuthContext);
     const [isLoadingCountries, setLoadingCountries] = useState(true);
     const [countries, setCountries] = useState([]);
+    const [pageLoading, setPageLoading] = useState(true);
 
     const { signOut } = useContext(AuthContext);
 
@@ -44,6 +46,11 @@ const Logged = ({ navigation }) => {
 
     const [selected, setSelected] = React.useState("");
 
+    const onComplete = after(countries.length, () => {
+        setPageLoading(false);
+        console.log("loaded");
+    });
+
     const data = [
         {key:'b', value:'England'},
         {key:'c', value:'Wales'},
@@ -52,6 +59,12 @@ const Logged = ({ navigation }) => {
     ]
 
     return (
+        <>
+            {pageLoading &&
+                <View className="h-full justify-center items-center bg-stone-900">
+                    <ActivityIndicator size="large" color="#00ff00"  />
+                </View>
+                }
         <View className="h-full bg-red-300">
             <View className="flex flex-1 flex-col bg-stone-900">
                 <View className="justify-center bg-blue-300 w-full rounded-md">
@@ -81,8 +94,10 @@ const Logged = ({ navigation }) => {
                         })}>
                         <Image source={{
                         uri: `${REACT_APP_MEDIA_BASE_URL}${item.image_location}`,
-                    }} key="Gere"
-                                                   style={{
+                    }}
+                               onLoad={onComplete}
+                               onError={onComplete}
+                               style={{
                                                        width,
                                                        height,
                                                        resizeMode:'stretch',
@@ -110,6 +125,7 @@ const Logged = ({ navigation }) => {
             </View>
 
             </View>
+        </>
             );
 }
 

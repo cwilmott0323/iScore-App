@@ -1,6 +1,6 @@
 import {View} from 'react-native';
 import {Text} from 'react-native'
-import { NavigationContainer } from '@react-navigation/native';
+import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import * as React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Logged from "./pages/Logged";
@@ -139,12 +139,25 @@ console.log("Error: ", e)
         tokenAuth()
     }, []);
 
+    const MyTheme = {
+        ...DefaultTheme,
+        colors: {
+            ...DefaultTheme.colors,
+            primary: '#1C1917',
+            background:'#1C1917'
+        },
+    };
+
   return (
       <AuthContext.Provider value={authContext}>
-      <NavigationContainer>
+      <NavigationContainer theme={MyTheme}>
           <Stack.Navigator
               initialRouteName="Home"
               screenOptions={{
+                  cardStyle: {
+                      backgroundColor: '#1C1917'
+                  },
+                  contentStyle: {backgroundColor: '#1C1917'},
                   headerStyle: {
                       backgroundColor: '#1C1917',
                   },
@@ -163,12 +176,11 @@ console.log("Error: ", e)
               ) : (
                   <>
               <Stack.Screen name="Logged" component={Logged} options={{title: "Start your adventure!"}}/>
-              <Stack.Screen name="Country" component={Country} options={{title: "Continue your adventure!"}}/>
-              <Stack.Screen name="City" component={City} options={{title: "Continue your adventure!"}}/>
-              <Stack.Screen name="Activity" component={Activity} options={{title: "Continue your adventure!" ,
-              headerShown: true}}/>
+              <Stack.Screen name="Country" component={Country} options={({ route }) => ({ title: route.params.name })}/>
+              <Stack.Screen name="City" component={City} options={({ route }) => ({ title: route.params.name })}/>
+              <Stack.Screen name="Activity" component={Activity} options={({ route }) => ({ title: route.params.name })}/>
               <Stack.Screen name="FullImage" component={FullImage} options={{title: "Gallery",
-                          headerShown: false, orientation: "All"}}/>
+                          headerShown: false, orientation: "All", contentStyle: {backgroundColor: '#1C1917'}}}/>
                   </>
               )}
           </Stack.Navigator>
