@@ -1,4 +1,4 @@
-import {View, Text, TouchableWithoutFeedback, Image, ScrollView} from 'react-native';
+import {View, Text, TouchableWithoutFeedback, Image, ScrollView, StyleSheet} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import {GetCityData} from '../api/GetCityData'
@@ -11,12 +11,10 @@ function onPressPlace(setShowOne, setShowTwo, showOne, showTwo) {
         setShowOne(true)
         setShowTwo(true)
     }
-    console.log("here")
 }
 
 function City ({ route, navigation }) {
     const { countryName, cityName } = route.params;
-    console.log(countryName, cityName)
     const [Data, setData] = useState(false);
 
     let [cityDataPlaces, setCityDataPlaces] = useState({});
@@ -81,7 +79,7 @@ function City ({ route, navigation }) {
                                    }}
                             />
                         </TouchableWithoutFeedback>
-                        <Text className="text-white absolute bottom-3 left-8 font-bold text-2xl items-start justify-center">
+                        <Text style={styles.textWithShadow} className="text-white absolute bottom-3 left-8 font-bold text-2xl items-start justify-center">
                             {activity_name}
                         </Text>
                         <View className="bg-blue-800 rounded-2xl pr-1 pl-1 absolute bottom-3 right-8">
@@ -100,7 +98,7 @@ function City ({ route, navigation }) {
                                    }}
                             />
                         </TouchableWithoutFeedback>
-                        <Text className="text-white absolute bottom-3 left-8 font-bold text-2xl items-start justify-center">
+                        <Text style={styles.textWithShadow} className="text-white absolute bottom-3 left-8 font-bold text-2xl items-start justify-center">
                             {activity_name}
                         </Text>
                         <View className="bg-yellow-800 rounded-2xl pr-1 pl-1 absolute bottom-3 right-8">
@@ -119,7 +117,7 @@ function City ({ route, navigation }) {
                                    }}
                             />
                         </TouchableWithoutFeedback>
-                        <Text className="text-white absolute bottom-3 left-8 font-bold text-2xl items-start justify-center">
+                        <Text style={styles.textWithShadow} className="text-white absolute bottom-3 left-8 font-bold text-2xl items-start justify-center">
                             {activity_name}
                         </Text>
                         <View className="bg-red-800 rounded-2xl pr-1 pl-1 absolute bottom-3 right-8">
@@ -133,5 +131,13 @@ function City ({ route, navigation }) {
         </View>
     );
 }
+
+const styles = StyleSheet.create({
+    textWithShadow:{
+        textShadowColor: 'rgba(0, 0, 0, 0.99)',
+        textShadowOffset: {width: -1, height: 1},
+        textShadowRadius: 5
+    }
+});
 
 export default City

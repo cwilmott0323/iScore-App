@@ -1,9 +1,10 @@
 import axios from "axios";
+import { REACT_APP_API_BASE_URL } from "@env"
 
 export const GetUserImages = async (token, setImagesUser, countryName, cityName) => {
     let images = []
     try {
-        const r = await axios.get(`http://192.168.5.222:5005/personalise`, {
+        const r = await axios.get(`${REACT_APP_API_BASE_URL}personalise`, {
             headers: {
                 'Authorization': `Bearer ${token}`,
                 'Location': `${countryName}/${cityName}`

@@ -1,10 +1,10 @@
 import axios from "axios";
+import { REACT_APP_API_BASE_URL } from "@env"
 
 export async function RegisterUser(credentials) {
     delete Object.assign(credentials, {"name": credentials["userName"] })["userName"];
     try {
-        console.log("Creds: ",credentials)
-        return await axios.post(`http://192.168.5.222:5005/accounts-create`, JSON.stringify(credentials))
+        return await axios.post(`${REACT_APP_API_BASE_URL}accounts-create`, JSON.stringify(credentials))
     } catch (e) {
         return {
             incorrect: "Account Creation Failed"

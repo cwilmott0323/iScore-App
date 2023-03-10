@@ -1,21 +1,29 @@
-import {View, Text, ScrollView, TouchableWithoutFeedback, ImageBackground} from 'react-native';
+import {View, Text, TouchableWithoutFeedback, FlatList, Dimensions} from 'react-native';
 import React, {useContext, useEffect, useState} from "react";
-import DropdownComponent from "../components/Dropdown";
 import {Button} from "@rneui/themed";
 import tw from 'twrnc';
 import {Icon} from "@rneui/base";
-import {GetCountryData} from '../api/GetCountryData'
 import {Image, StyleSheet} from 'react-native' ;
 import {AuthContext} from "../Context";
-import * as SecureStore from "expo-secure-store";
+import {useHeaderHeight} from "@react-navigation/elements";
+import { SelectList } from 'react-native-dropdown-select-list'
+import {GetCountries} from "../api/GetCountries";
+import { REACT_APP_MEDIA_BASE_URL } from "@env"
 
 
 
 
 const Logged = ({ navigation }) => {
-    const [value, setValue] = useState();
-    const [countryData, setCountryData] = useState({});
-    const [isLoading, setLoading] = useState(true);
+    let {width, height} = Dimensions.get("screen")
+    const headerHeight = useHeaderHeight();
+    height = height / 2.3
+    height = height - headerHeight
+
+    width = width / 2.2
+
+    const { getToken } = useContext(AuthContext);
+    const [isLoadingCountries, setLoadingCountries] = useState(true);
+    const [countries, setCountries] = useState([]);
 
     const { signOut } = useContext(AuthContext);
 
@@ -23,40 +31,93 @@ const Logged = ({ navigation }) => {
         signOut()
     }
 
+    useEffect(() => {
+        async function fetchToken () {
+            return await getToken()
+        }
+        async function fetchCountries() {
+            const token = await fetchToken()
+            const r = await GetCountries(setCountries, setLoadingCountries)
+        }
+        fetchCountries()
+    }, [setCountries])
+
+    const [selected, setSelected] = React.useState("");
+
+    const data = [
+        {key:'b', value:'England'},
+        {key:'c', value:'Wales'},
+        {key:'d', value:'Northern Ireland'},
+        {key:'e', value:'Scotland'},
+    ]
+
     return (
-        <View className="bg-stone-900 h-full">
-            <View className="flex flex-row justify-around items-center bg-stone-900" >
-                <DropdownComponent setValue={setValue} value={value}>
-                </DropdownComponent>
-                <Button  onPress={() => GetCountryData(setCountryData, value, setLoading)} buttonStyle={tw`bg-stone-900 h-16 mb-2 rounded-md mr-5`}>
-                    <Icon name="search" color="white" />
-                </Button>
-            </View>
-            <Button onPress={() => ClearToken()}>
-                Logout
-            </Button>
-            <ScrollView>
-                {!isLoading && countryData[0].map(({ city_id, city_name, image_location, country_id, country_name }) => (
-                    <View key={city_id} className="flex flex-1 justify-center items-center mb-3 mt-1">
-                        <TouchableWithoutFeedback onPress={() => navigation.navigate('City', {
-                            countryName: country_name,
-                            cityName: city_name,
+        <View className="h-full bg-red-300">
+            <View className="flex flex-1 flex-col bg-stone-900">
+                <View className="justify-center bg-blue-300 w-full rounded-md">
+                <SelectList
+                    setSelected={(val) => setSelected(val)}
+                    data={data}
+                    save="value"
+                    boxStyles={tw`mr-5 ml-5 mb-5 mt-5`}
+                    dropdownStyles={tw`mr-5 ml-5 mb-5`}
+                />
+                     <Button onPress={() => navigation.navigate('Country', {
+                         country: selected
+                     })} buttonStyle={tw`bg-stone-900 h-12 rounded-md ml-5 mr-5 mb-5`}>
+                         <Icon name="search" color="white" />
+                     </Button>
+                </View>
+            <View className="bg-stone-900 flex-1">
+                {!isLoadingCountries &&
+                <FlatList
+                    columnWrapperStyle={{justifyContent: 'space-around'}}
+                    scrollEnabled={true}
+                    data={countries}
+                    renderItem={({item}) =>
+                        <View>
+                        <TouchableWithoutFeedback onPress={() => navigation.navigate('Country', {
+                            country: item.country_name
                         })}>
-                        <Image className="h-60 w-11/12 rounded-xl opacity-80"
-                               source={{
-                                   uri: `https://iscore-media.s3.us-east-2.amazonaws.com/${image_location}`,
-                               }}
-                        />
-
+                        <Image source={{
+                        uri: `${REACT_APP_MEDIA_BASE_URL}${item.image_location}`,
+                    }} key="Gere"
+                                                   style={{
+                                                       width,
+                                                       height,
+                                                       resizeMode:'stretch',
+                                                       borderWidth: 2,
+                                                       borderColor: "#19171C",
+                                                       // margin: 5,
+                                                       marginTop: 5,
+                                                       // marginLeft: 5,
+                                                       // marginBottom: 5,
+                                                       borderRadius: 10,
+                                                   }}
+                    />
                         </TouchableWithoutFeedback>
+                            <Text style={styles.textWithShadow} className="text-white absolute bottom-3 left-3 font-bold text-2xl items-start justify-center [text-shadow:_0_1px_0_rgb(0_0_0_/_40%)]">
+                                {item.country_name}
+                            </Text>
+                        </View>
+                            }
+                    keyExtractor={item => item.country_id}
+                    numColumns={2}
+                />
 
-                        <Text className="text-white absolute bottom-3 left-8 font-bold text-2xl items-start justify-center drop-shadow-[70px_70px_70px_rgba(55,55,55,0.0)]">
-                            {city_name}
-                        </Text>
-                    </View>
-                ))}
-            </ScrollView>
-        </View>
+                    }
+            </View>
+            </View>
+
+            </View>
             );
 }
+
+const styles = StyleSheet.create({
+    textWithShadow:{
+        textShadowColor: 'rgba(0, 0, 0, 0.99)',
+        textShadowOffset: {width: -1, height: 1},
+        textShadowRadius: 5
+    }
+});
 export default Logged

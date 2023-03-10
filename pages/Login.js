@@ -68,8 +68,6 @@ const Login = ({ navigation }) => {
                 }
                 title="LOG IN"/>
 
-            {/*<ButtonSecondary ButtonText="REGISTER" NavTo={creds}></ButtonSecondary>*/}
-
             <Button
                 onPress={() => navigation.navigate('Register')}
                 buttonStyle={
@@ -82,8 +80,6 @@ const Login = ({ navigation }) => {
                     tw`font-bold`
                 }
                 title="REGISTER"/>
-
-            {/*<ButtonSecondary ButtonText="REGISTER" NavTo={creds}></ButtonSecondary>*/}
 
         </View>
     );

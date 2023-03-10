@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import * as React from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import Logged from "./pages/Logged";
+import Country from "./pages/Country";
 import City from "./pages/City";
 import {Activity} from "./pages/Activity";
 import {useEffect, useMemo, useReducer} from "react";
@@ -15,7 +16,9 @@ import {AuthContext} from "./Context";
 import Register from "./pages/Register";
 import {RegisterUser} from "./api/RegisterUser";
 import {FullImage} from "./pages/FullImage";
-import SlideItem from "./components/SlideItem";
+import { REACT_APP_API_BASE_URL } from "@env"
+
+console.log(`ENV: ${REACT_APP_API_BASE_URL}`)
 
 
 function SplashScreen() {
@@ -79,11 +82,9 @@ export default function App() {
             signOut: async () => {
                 await SecureStore.deleteItemAsync("iScore")
                 const x = await SecureStore.getItemAsync("iScore")
-                console.log("Delete Token: ", x)
                 dispatch({type: 'SIGN_OUT'})
             },
             signUp: async (data) => {
-                console.log("DATA: ", data)
                 const email = data.email
                 const password = data.password
                 const name = data.name
@@ -92,7 +93,6 @@ export default function App() {
                     password,
                     name
                 });
-                console.log("signup resp: ", resp.data)
                 if (!resp.status) {
                    console.log("Error: Sign up failed")
                     return
@@ -163,11 +163,12 @@ console.log("Error: ", e)
               ) : (
                   <>
               <Stack.Screen name="Logged" component={Logged} options={{title: "Start your adventure!"}}/>
+              <Stack.Screen name="Country" component={Country} options={{title: "Continue your adventure!"}}/>
               <Stack.Screen name="City" component={City} options={{title: "Continue your adventure!"}}/>
               <Stack.Screen name="Activity" component={Activity} options={{title: "Continue your adventure!" ,
               headerShown: true}}/>
               <Stack.Screen name="FullImage" component={FullImage} options={{title: "Gallery",
-                          headerShown: true}}/>
+                          headerShown: false, orientation: "All"}}/>
                   </>
               )}
           </Stack.Navigator>

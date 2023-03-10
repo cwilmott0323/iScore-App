@@ -24,7 +24,6 @@ const Register = ({navigation}) => {
     const { signUp } = useContext(AuthContext);
 
     const handleSubmitSignUp = async e => {
-        console.log("Regitser Pressed: ", email, password, name)
         signUp({ email, password, name })
     }
 

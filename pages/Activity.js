@@ -1,4 +1,4 @@
-import {ScrollView, Text, View, Image, TouchableWithoutFeedback, TouchableHighlight} from "react-native";
+import {ScrollView, Text, View, Image, TouchableWithoutFeedback, TouchableHighlight, StyleSheet} from "react-native";
 import React, {useContext, useEffect, useState} from "react";
 import Slider from "../components/Slider"
 import {GetActivity} from "../api/GetActivity";
@@ -13,15 +13,14 @@ import {CheckLocData} from "../api/CheckLocData";
 import {CheckIsComplete} from "../api/IsComplete";
 
 export function Activity({route, navigation}) {
-    const {imageLocation, cityName, countryName, activity, activity_id} = route.params;
-    const [activityData, setActivityData] = useState({});
+    const {cityName, countryName, activity, activity_id} = route.params;
+    const [setActivityData] = useState({});
     const [data, setData] = useState(false);
     const [images, setImages] = useState([]);
     const [imagesUser, setImagesUser] = useState([]);
     const { getToken } = useContext(AuthContext);
     const [photo, setPhoto] = useState(null);
     const [uploadSuccess, setUploadSuccess] = useState(null)
-    const [exifData, setExifData] = useState(null)
     const [lat, setLat] = useState(null);
     const [lon, setLon] = useState(null);
     const [upload, setUpload] = useState(false);
@@ -29,15 +28,11 @@ export function Activity({route, navigation}) {
 
 
     const handleSubmitUpload = async (photo) => {
-        console.log("Upload")
-
         let fileName = photo.split('/').pop();
         const token = await getToken();
         if (!complete) {
             let x = await CheckLocData(lat, lon, activity_id, token);
-            console.log("Check loc resp: ", x)
             if (!x.data[0]) {
-                console.log("Inside fail: ")
                 alert("Photo not taken in location.")
                 return
             }
@@ -62,7 +57,6 @@ export function Activity({route, navigation}) {
 
         if (!result.canceled) {
             setPhoto(result.assets[0].uri);
-            setExifData(result.exif)
             setLat(result.assets[0].exif["GPSLatitude"])
             setLon(result.assets[0].exif["GPSLongitude"])
             setUpload(true)
@@ -80,10 +74,8 @@ export function Activity({route, navigation}) {
 
         if (!result.canceled) {
             setPhoto(result.assets[0].uri);
-            setExifData(result.assets[0].exif);
             if (!complete) {
                 let location = await Location.getCurrentPositionAsync({});
-                console.log("LOCATION: ", location.coords.latitude, location.coords.longitude)
                 setLat(location.coords.latitude)
                 setLon(location.coords.longitude)
             }
@@ -96,7 +88,6 @@ export function Activity({route, navigation}) {
         async function isCompleted(countryName,cityName, activity_id) {
             const token = await fetchToken()
             const complete = await CheckIsComplete(token, countryName,cityName, activity_id)
-            console.log("isComplete?: ", complete.data[0])
             if (complete.data[0]) {
                 setComplete(true)
             }
