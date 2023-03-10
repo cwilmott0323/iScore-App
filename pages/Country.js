@@ -10,7 +10,7 @@ const Country = ({ route, navigation }) => {
     const [isLoading, setLoading] = useState(true);
 
     useEffect(() => {
-        GetCountryData(setCountryData, country, setLoading, setLoadingCountries)
+        GetCountryData(setCountryData, country, setLoading)
     }, [])
 
     return (

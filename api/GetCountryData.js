@@ -1,7 +1,7 @@
 import axios from "axios";
 import { REACT_APP_API_BASE_URL } from "@env"
 
-export async function GetCountryData(setCountryData, selected, setLoading, setLoadingCountries) {
+export async function GetCountryData(setCountryData, selected, setLoading) {
     if (!selected.length) {
         alert("Please select a country")
     }
@@ -9,6 +9,4 @@ export async function GetCountryData(setCountryData, selected, setLoading, setLo
 
     setCountryData(r.data)
     setLoading(false)
-    setLoadingCountries(true)
-
 }

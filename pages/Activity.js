@@ -14,7 +14,6 @@ import {CheckIsComplete} from "../api/IsComplete";
 
 export function Activity({route, navigation}) {
     const {cityName, countryName, activity, activity_id} = route.params;
-    const [setActivityData] = useState({});
     const [data, setData] = useState(false);
     const [images, setImages] = useState([]);
     const [imagesUser, setImagesUser] = useState([]);
@@ -100,7 +99,6 @@ export function Activity({route, navigation}) {
             const token = await fetchToken()
             const r = await GetActivity(countryName, cityName, activity, setImages)
             await GetUserImages(token, setImagesUser, countryName, cityName)
-            setActivityData(r.data)
             setData(true)
         }
         isCompleted(countryName, cityName, activity_id)
