@@ -1,4 +1,4 @@
-import {View} from 'react-native';
+import {StatusBar, View} from 'react-native';
 import {Text} from 'react-native'
 import {DefaultTheme, NavigationContainer} from '@react-navigation/native';
 import * as React from 'react';
@@ -151,6 +151,7 @@ console.log("Error: ", e)
   return (
       <AuthContext.Provider value={authContext}>
       <NavigationContainer theme={MyTheme}>
+          <StatusBar barStyle='light-content' />
           <Stack.Navigator
               initialRouteName="Home"
               screenOptions={{

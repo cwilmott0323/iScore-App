@@ -98,8 +98,10 @@ export function Activity({route, navigation}) {
 
     useEffect(() => {
         async function isCompleted(countryName,cityName, activity_id) {
+            console.log("Checking completion")
             const token = await fetchToken()
             const complete = await CheckIsComplete(token, countryName,cityName, activity_id)
+            console.log("Complete: ")
             if (complete.data[0]) {
                 setComplete(true)
             }
@@ -109,8 +111,10 @@ export function Activity({route, navigation}) {
             return await getToken()
         }
         async function fetchActivity(countryName,cityName, activity) {
+            console.log("Fetch Activity")
             const token = await fetchToken()
             const r = await GetActivity(countryName, cityName, activity, setImages)
+            console.log("Get Activity: ",r)
             await GetUserImages(token, setImagesUser, countryName, cityName)
             setData(true)
         }

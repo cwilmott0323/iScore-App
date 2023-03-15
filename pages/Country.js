@@ -39,7 +39,7 @@ const Country = ({ route, navigation }) => {
                                onLoad={onComplete}
                                onError={onComplete}
                                source={{
-                                   uri: `https://iscore-media.s3.us-east-2.amazonaws.com/${image_location}`,
+                                   uri: `${image_location}`,
                                }}
                         />
 

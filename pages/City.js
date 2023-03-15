@@ -35,6 +35,7 @@ function City ({ route, navigation }) {
     useEffect(() => {
         async function fetchMyAPI(countryName,cityName) {
             const r = await GetCityData(countryName, cityName)
+            console.log("r.Data: ", r.data[0])
             r.data[0].forEach((item, i) => {
                 for(let key in item) {
                     if (item[key] === "Place") {
@@ -89,7 +90,7 @@ function City ({ route, navigation }) {
                         })}>
                             <Image className="h-60 w-11/12 rounded-xl"
                                    source={{
-                                       uri: `https://iscore-media.s3.us-east-2.amazonaws.com/${image_location}`,
+                                       uri: `${image_location}`,
                                    }}
                                    onLoad={onComplete}
                                    onError={onComplete}
@@ -110,7 +111,7 @@ function City ({ route, navigation }) {
                         <TouchableWithoutFeedback onPress={() => navigation.navigate('City')}>
                             <Image className="h-60 w-11/12 rounded-xl"
                                    source={{
-                                       uri: `https://iscore-media.s3.us-east-2.amazonaws.com/${image_location}`,
+                                       uri: `${image_location}`,
                                    }}
                                    onLoad={onComplete}
                                    onError={onComplete}
@@ -131,7 +132,7 @@ function City ({ route, navigation }) {
                         <TouchableWithoutFeedback onPress={() => navigation.navigate('City')}>
                             <Image className="h-60 w-11/12 rounded-xl"
                                    source={{
-                                       uri: `https://iscore-media.s3.us-east-2.amazonaws.com/${image_location}`,
+                                       uri: `${image_location}`,
                                    }}
                                    onLoad={onComplete}
                                    onError={onComplete}

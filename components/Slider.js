@@ -4,6 +4,7 @@ import SlideItem from "./SlideItem";
 export default function Slider ({images, userImages, half, setPageLoading}) {
     const imagesAppend = images[0]
     const array3 = [imagesAppend, ...userImages];
+    console.log("All images: ", array3)
     return(
         <View>
             <FlatList data={array3}

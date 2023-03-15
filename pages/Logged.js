@@ -1,4 +1,12 @@
-import {View, Text, TouchableWithoutFeedback, FlatList, Dimensions, ActivityIndicator} from 'react-native';
+import {
+    View,
+    Text,
+    TouchableWithoutFeedback,
+    FlatList,
+    Dimensions,
+    ActivityIndicator,
+    TouchableOpacity
+} from 'react-native';
 import React, {useContext, useEffect, useState} from "react";
 import {Button} from "@rneui/themed";
 import tw from 'twrnc';
@@ -10,6 +18,7 @@ import { SelectList } from 'react-native-dropdown-select-list'
 import {GetCountries} from "../api/GetCountries";
 import { REACT_APP_MEDIA_BASE_URL } from "@env"
 import { after } from "underscore";
+import {FontAwesome} from "@expo/vector-icons";
 
 
 
@@ -39,7 +48,12 @@ const Logged = ({ navigation }) => {
         }
         async function fetchCountries() {
             const token = await fetchToken()
-            const r = await GetCountries(setCountries, setLoadingCountries)
+            try {
+                await GetCountries(setCountries, setLoadingCountries)
+            } catch (e) {
+                console.log("Use Effect error: ", e)
+            }
+
         }
         fetchCountries()
     }, [setCountries])
@@ -67,19 +81,32 @@ const Logged = ({ navigation }) => {
                 }
         <View className="h-full bg-red-300">
             <View className="flex flex-1 flex-col bg-stone-900">
-                <View className="justify-center bg-blue-300 w-full rounded-md">
+                <View className="justify-center bg-stone-900 w-full rounded-md">
                 <SelectList
                     setSelected={(val) => setSelected(val)}
                     data={data}
                     save="value"
-                    boxStyles={tw`mr-5 ml-5 mb-5 mt-5`}
-                    dropdownStyles={tw`mr-5 ml-5 mb-5`}
+                    boxStyles={tw`mr-5 ml-5 mb-5 mt-5 text-white`}
+                    dropdownStyles={tw`mr-5 ml-5 mb-5 text-white`}
+                    dropdownTextStyles={tw`text-white`}
+                    dropdownItemStyles={tw`text-white`}
+                    inputStyles={tw`text-white`}
+                    searchicon={<FontAwesome name="search" color={'white'} />}
+                    closeicon={<FontAwesome name="close" color={'white'} />}
+                    arrowicon={<FontAwesome name="chevron-down" color={'white'} />}
+                    searchPlaceholder={"Search..."}
+                    placeHolderColor={"white"}
                 />
-                     <Button onPress={() => navigation.navigate('Country', {
-                         country: selected
-                     })} buttonStyle={tw`bg-stone-900 h-12 rounded-md ml-5 mr-5 mb-5`}>
-                         <Icon name="search" color="white" />
-                     </Button>
+                    <TouchableOpacity onPress={() => navigation.navigate('Country', {
+                        country: selected
+                    })}>
+                        <Icon name="search" color="white" style={tw`bg-stone-900 h-10 rounded-md ml-5 mr-5 mb-5 border-solid border-gray-300 border-2 justify-center`}/>
+                    </TouchableOpacity>
+                     {/*<Button onPress={() => navigation.navigate('Country', {*/}
+                     {/*    country: selected*/}
+                     {/*})} buttonStyle={tw`bg-stone-900 h-12 rounded-md ml-5 mr-5 mb-5`}>*/}
+                     {/*    <Icon name="search" color="white" />*/}
+                     {/*</Button>*/}
                 </View>
             <View className="bg-stone-900 flex-1">
                 {!isLoadingCountries &&
@@ -93,7 +120,7 @@ const Logged = ({ navigation }) => {
                             country: item.country_name
                         })}>
                         <Image source={{
-                        uri: `${REACT_APP_MEDIA_BASE_URL}${item.image_location}`,
+                        uri: `${item.image_location}`,
                     }}
                                onLoad={onComplete}
                                onError={onComplete}
